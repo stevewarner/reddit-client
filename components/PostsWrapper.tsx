@@ -44,16 +44,15 @@ const PostsWrapper = ({ initialSubreddit, initialPosts }: Props) => {
     }
   );
 
-  const observer = useRef(
-    new IntersectionObserver((entries) => {
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observer.current = new IntersectionObserver((entries) => {
       const first = entries[0];
       if (first.isIntersecting) {
         fetchNextPage();
       }
-    })
-  );
-
-  useEffect(() => {
+    });
     // check if last post is visible
     const currentElement = lastPostRef.current;
     const currentObserver = observer.current;
@@ -77,6 +76,8 @@ const PostsWrapper = ({ initialSubreddit, initialPosts }: Props) => {
   const currPosts = data?.pages.flat() || initialPosts;
   lastPost = currPosts[currPosts.length - 1]?.id;
 
+  if (!data) return null;
+
   return (
     <div className="ios:max-fill-height ios:min-fill-height hide-scrollbar grid max-h-screen snap-y snap-mandatory grid-cols-1 overflow-y-scroll">
       {/* <div className="ios:fill-height flex h-screen w-screen snap-center snap-always justify-center">
@@ -91,7 +92,9 @@ const PostsWrapper = ({ initialSubreddit, initialPosts }: Props) => {
               key={post.id}
               id={post.id}
               className="ios:fill-height flex h-screen w-screen snap-center snap-always justify-center"
-              {...(isRef ? { ref: lastPostRef } : {})}
+              {...(isRef
+                ? { ref: lastPostRef as React.RefObject<HTMLDivElement> }
+                : {})}
             >
               <Post
                 id={post.id}
