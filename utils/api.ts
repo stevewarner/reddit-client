@@ -5,7 +5,8 @@ type Props = {
 
 export const getPosts = async ({ sub, after = null }: Props) => {
   const res = await fetch(
-    `https://www.reddit.com/r/${sub}.json?after=${after}&raw_json=1&sr_detail=true`
+    `https://www.reddit.com/r/${sub}.json?after=${after}&raw_json=1&sr_detail=true`,
+    { next: { revalidate: 60 } }
   );
 
   if (!res.ok) {
