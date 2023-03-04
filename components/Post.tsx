@@ -1,9 +1,7 @@
 'use client';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Overlay from './Overlay';
-
-// {...(post.id === lastPost ? { ref: lastPostRef } : {})}
 
 const Post = ({
   id,
@@ -17,7 +15,9 @@ const Post = ({
   media,
   thumbnail,
 }: IPost) => {
+  const videoRef = useRef(null);
   const [isFullscreen, toggleIsFullscreen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   return (
     <div className="ios:fill-height relative flex h-screen min-w-full justify-center bg-black">
@@ -32,6 +32,9 @@ const Post = ({
           preload="auto"
           playsInline
           poster={thumbnail}
+          ref={videoRef}
+          onPlay={() => setIsPlaying(true)}
+          onError={(err) => console.log('video error', err)}
         >
           <source src={media} />
         </video>
@@ -57,6 +60,13 @@ const Post = ({
         src={src}
         icon={icon}
         toggleIsFullscreen={toggleIsFullscreen}
+        {...(isVideo
+          ? {
+              video: videoRef,
+              isPlaying,
+              setIsPlaying,
+            }
+          : {})}
       />
     </div>
   );

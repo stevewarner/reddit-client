@@ -66,7 +66,7 @@ const PostsWrapper = ({ initialSubreddit, initialPosts }: Props) => {
         currentObserver.unobserve(currentElement);
       }
     };
-  }, [data?.pages]);
+  }, [data?.pages, fetchNextPage]);
 
   if (isLoading) return <Loading />;
 
