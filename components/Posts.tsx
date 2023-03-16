@@ -2,7 +2,7 @@ import { getPosts } from '@/utils/api';
 import PostsWrapper from './PostsWrapper';
 
 const Posts = async ({ subreddit = '' }: { subreddit: string }) => {
-  if (subreddit === '%5Bsubreddit%5D') return null;
+  if (subreddit === 'r/%5Bsubreddit%5D') return null;
   const posts = await getPosts({ sub: subreddit, after: null });
 
   if (posts.length < 1) return null;
