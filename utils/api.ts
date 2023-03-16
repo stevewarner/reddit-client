@@ -17,38 +17,36 @@ export const getPosts = async ({ sub, after = null }: Props) => {
   }
 
   const data = await res.json();
-  const posts =
-    data?.data?.children ||
-    []
-      .filter((post: any) => {
-        return (
-          post.data.url.match(
-            /(\.jpg|\.jpeg|\.png|\.gif|\.webp|\.gifv|\.webm|\.mp4)$/
-          ) ||
-          post.data.preview?.reddit_video_preview?.fallback_url ||
-          post.data.media?.reddit_video?.fallback_url
-        );
-      })
-      .map((post: any) => {
-        const isVideo =
-          !!post.data.preview?.reddit_video_preview?.fallback_url ||
-          !!post.data.media?.reddit_video?.fallback_url;
-        return {
-          id: post.data.name,
-          title: post.data.title,
-          src: post.data.url,
-          author: post.data.author,
-          upvotes: post.data.ups - post.data.downs,
-          subreddit: post.data.subreddit,
-          isVideo,
-          media: isVideo
-            ? post.data.preview?.reddit_video_preview?.fallback_url ||
-              post.data.media?.reddit_video?.fallback_url
-            : post.data.url,
-          thumbnail: post.data.thumbnail,
-          icon: post.data.sr_detail?.icon_img,
-        };
-      });
+  const posts = data?.data?.children
+    .filter((post: any) => {
+      return (
+        post.data.url.match(
+          /(\.jpg|\.jpeg|\.png|\.gif|\.webp|\.gifv|\.webm|\.mp4)$/
+        ) ||
+        post.data.preview?.reddit_video_preview?.fallback_url ||
+        post.data.media?.reddit_video?.fallback_url
+      );
+    })
+    .map((post: any) => {
+      const isVideo =
+        !!post.data.preview?.reddit_video_preview?.fallback_url ||
+        !!post.data.media?.reddit_video?.fallback_url;
+      return {
+        id: post.data.name,
+        title: post.data.title,
+        src: post.data.url,
+        author: post.data.author,
+        upvotes: post.data.ups - post.data.downs,
+        subreddit: post.data.subreddit,
+        isVideo,
+        media: isVideo
+          ? post.data.preview?.reddit_video_preview?.fallback_url ||
+            post.data.media?.reddit_video?.fallback_url
+          : post.data.url,
+        thumbnail: post.data.thumbnail,
+        icon: post.data.sr_detail?.icon_img,
+      };
+    });
   return posts;
 };
 
@@ -72,38 +70,36 @@ export const getSubbedPosts = async ({ sub, after = null }: Props) => {
   }
 
   const data = await res.json();
-  const posts =
-    data?.data?.children ||
-    []
-      .filter((post: any) => {
-        return (
-          post.data.url.match(
-            /(\.jpg|\.jpeg|\.png|\.gif|\.webp|\.gifv|\.webm|\.mp4)$/
-          ) ||
-          post.data.preview?.reddit_video_preview?.fallback_url ||
-          post.data.media?.reddit_video?.fallback_url
-        );
-      })
-      .map((post: any) => {
-        const isVideo =
-          !!post.data.preview?.reddit_video_preview?.fallback_url ||
-          !!post.data.media?.reddit_video?.fallback_url;
-        return {
-          id: post.data.name,
-          title: post.data.title,
-          src: post.data.url,
-          author: post.data.author,
-          upvotes: post.data.ups - post.data.downs,
-          subreddit: post.data.subreddit,
-          isVideo,
-          media: isVideo
-            ? post.data.preview?.reddit_video_preview?.fallback_url ||
-              post.data.media?.reddit_video?.fallback_url
-            : post.data.url,
-          thumbnail: post.data.thumbnail,
-          icon: post.data.sr_detail?.icon_img.replace(/&amp;/g, '&'),
-        };
-      });
+  const posts = data?.data?.children
+    .filter((post: any) => {
+      return (
+        post.data.url.match(
+          /(\.jpg|\.jpeg|\.png|\.gif|\.webp|\.gifv|\.webm|\.mp4)$/
+        ) ||
+        post.data.preview?.reddit_video_preview?.fallback_url ||
+        post.data.media?.reddit_video?.fallback_url
+      );
+    })
+    .map((post: any) => {
+      const isVideo =
+        !!post.data.preview?.reddit_video_preview?.fallback_url ||
+        !!post.data.media?.reddit_video?.fallback_url;
+      return {
+        id: post.data.name,
+        title: post.data.title,
+        src: post.data.url,
+        author: post.data.author,
+        upvotes: post.data.ups - post.data.downs,
+        subreddit: post.data.subreddit,
+        isVideo,
+        media: isVideo
+          ? post.data.preview?.reddit_video_preview?.fallback_url ||
+            post.data.media?.reddit_video?.fallback_url
+          : post.data.url,
+        thumbnail: post.data.thumbnail,
+        icon: post.data.sr_detail?.icon_img.replace(/&amp;/g, '&'),
+      };
+    });
   return posts;
 };
 
