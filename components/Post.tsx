@@ -34,7 +34,6 @@ const Post = ({
           poster={thumbnail}
           ref={videoRef}
           onPlay={() => setIsPlaying(true)}
-          onError={(err) => console.log('video error', err)}
         >
           <source src={media} />
         </video>

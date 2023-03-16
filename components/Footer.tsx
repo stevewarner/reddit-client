@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { GithubLogo } from './Icons';
+import Login from './LogIn';
 
 interface Props {
   className?: string;
@@ -7,13 +9,13 @@ interface Props {
 const Footer: React.FC<Props> = ({}) => {
   return (
     <footer className="flex items-center justify-between bg-white p-4 dark:bg-slate-800">
-      <p className="text-sm">v1.0.0</p>
       <Link
         href="https://github.com/stevewarner/reddit-client"
         className="text-sm text-slate-900 hover:underline dark:text-white"
       >
-        View on GitHub
+        <GithubLogo />
       </Link>
+      <Login />
     </footer>
   );
 };

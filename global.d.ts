@@ -11,3 +11,9 @@ type IPost = {
   thumbnail: string;
   icon: string;
 };
+
+type ISub = {
+  id: string;
+  name: string;
+  isSubscribed: boolean;
+};

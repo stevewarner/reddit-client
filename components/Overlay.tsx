@@ -39,13 +39,6 @@ const Overlay = ({
     toggleIsFullscreen((prev: boolean) => !prev);
   };
 
-  useEffect(() => {
-    // cant detect useRef changes, maybe do error handling here
-    if (video?.current?.error) {
-      console.log('video useeffect', video);
-    }
-  }, [video]);
-
   return (
     <div
       className="ios:fill-height absolute grid h-screen min-w-full grid-flow-col grid-cols-4 grid-rows-4 items-center justify-items-center gap-4 p-2 text-white"
@@ -103,7 +96,6 @@ const Overlay = ({
       <div className="col-span-1 col-start-4 row-span-2 row-start-3 flex h-full flex-col items-center justify-evenly">
         <button
           onClick={() => {
-            console.log('save', id);
             setIsSaved((prev) => !prev);
           }}
           className={`${
@@ -114,9 +106,9 @@ const Overlay = ({
           <BookmarkIcon />
         </button>
         <Link
-          href={`https://www.reddit.com/r/${subreddit}/comments/${id.substring(
-            3
-          )}`}
+          href={`https://www.reddit.com/r/${subreddit}/comments/${
+            id && id.substring(3)
+          }`}
         >
           <CommentIcon />
         </Link>

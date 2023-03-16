@@ -1,3 +1,4 @@
+import { AuthProvider } from '@/contexts/AuthProvider';
 import { QueryProvider } from '@/contexts/QueryContext';
 import './globals.css';
 
@@ -14,7 +15,9 @@ export default function RootLayout({
       */}
       <head />
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <AuthProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

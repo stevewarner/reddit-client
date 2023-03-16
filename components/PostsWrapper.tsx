@@ -1,8 +1,9 @@
 'use client';
+import { useSession } from 'next-auth/react';
 import { useInfiniteQuery } from 'react-query';
 import { useRef, useEffect } from 'react';
 import Post from './Post';
-import { getPosts } from '@/utils/api';
+import { getPosts, getSubbedPosts } from '@/utils/api';
 import Loading from './Loading';
 
 interface Props {
@@ -21,16 +22,31 @@ const fetchData = async ({
   return data;
 };
 
+const fetchSubbedData = async ({
+  sub,
+  after = null,
+}: {
+  sub: string;
+  after?: string | null;
+}) => {
+  const data = await getSubbedPosts({ sub, after });
+  return data;
+};
+
 const PostsWrapper = ({ initialSubreddit, initialPosts }: Props) => {
+  const { data: session } = useSession();
+
   const lastPostRef = useRef(null);
   let lastPost =
     (initialPosts.length > 0 && initialPosts[initialPosts.length - 1]?.id) ||
     '';
 
   const { data, isLoading, fetchNextPage, error } = useInfiniteQuery(
-    `${initialSubreddit}-posts`,
+    session ? `${initialSubreddit}-subbedPosts` : `${initialSubreddit}-posts`,
     async ({ pageParam = lastPost }) =>
-      fetchData({ sub: initialSubreddit, after: pageParam }),
+      !session
+        ? fetchData({ sub: initialSubreddit, after: pageParam })
+        : fetchSubbedData({ sub: initialSubreddit, after: pageParam }),
     {
       initialData: {
         pageParams: [null],
@@ -39,8 +55,8 @@ const PostsWrapper = ({ initialSubreddit, initialPosts }: Props) => {
       getNextPageParam: (prevPosts: IPost[]) => {
         return prevPosts[prevPosts.length - 1]?.id;
       },
-      keepPreviousData: true,
-      enabled: false,
+      keepPreviousData: session ? false : true,
+      enabled: session ? true : false,
     }
   );
 
@@ -80,9 +96,6 @@ const PostsWrapper = ({ initialSubreddit, initialPosts }: Props) => {
 
   return (
     <div className="ios:max-fill-height ios:min-fill-height hide-scrollbar grid max-h-screen snap-y snap-mandatory grid-cols-1 overflow-y-scroll">
-      {/* <div className="ios:fill-height flex h-screen w-screen snap-center snap-always justify-center">
-        <button onClick={() => fetchNextPage()}>Fetch more</button>
-      </div> */}
       {data &&
         data.pages.flat().map((post: IPost) => {
           const isRef = post.id === lastPost;

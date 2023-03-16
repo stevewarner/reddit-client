@@ -9,7 +9,7 @@ const Subreddit = ({ params }: { params: { subreddit: string } }) => {
       <SideMenu />
       <main className="flex min-w-full flex-1 snap-center snap-always items-center justify-center">
         {/* @ts-expect-error Server Component */}
-        <Posts subreddit={subreddit} />
+        <Posts subreddit={`r/${subreddit}`} />
       </main>
     </div>
   );
