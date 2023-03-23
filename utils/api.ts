@@ -8,7 +8,7 @@ type Props = {
 export const getPosts = async ({ sub, after = null }: Props) => {
   const res = await fetch(
     `https://www.reddit.com/${sub}.json?after=${after}&raw_json=1&sr_detail=true`,
-    { next: { revalidate: false } }
+    { next: { revalidate: 60 } }
   );
 
   if (!res.ok) {
@@ -103,31 +103,6 @@ export const getSubbedPosts = async ({ sub, after = null }: Props) => {
   return posts;
 };
 
-export const getDefaultSubreddits = async () => {
-  const res = await fetch(`https://www.reddit.com/subreddits.json?limit=25`, {
-    next: { revalidate: 60 },
-  });
-
-  if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch data');
-  }
-
-  const data = await res.json();
-
-  if (!data?.data?.children) return [];
-
-  const subreddits = data.data.children.map((sub: any) => {
-    return {
-      id: sub.data.name,
-      name: sub.data.display_name,
-      isSubscribed: sub.data.user_is_subscriber,
-    };
-  });
-
-  return subreddits;
-};
-
 type SubredditsList =
   | {
       id: string;
@@ -135,6 +110,43 @@ type SubredditsList =
       isSubscribed: boolean;
     }[]
   | [];
+
+export const getDefaultSubreddits = async () => {
+  let subreddits = [] as SubredditsList;
+  let after = null;
+
+  do {
+    let url = 'https://www.reddit.com/subreddits/default.json';
+
+    if (after) {
+      url += `?after=${after}`;
+    }
+
+    const res = await fetch(url, {
+      next: { revalidate: false },
+    });
+
+    const data = await res.json();
+    subreddits = subreddits.concat(data?.data?.children);
+    after = data.data.after;
+  } while (after !== null);
+
+  if (!subreddits) return [];
+
+  const subbedList = subreddits.map((sub: any) => {
+    return {
+      id: sub.data.name,
+      name: sub.data.display_name,
+      isSubscribed: sub.data.user_is_subscriber,
+    };
+  });
+
+  return subbedList.sort(function (a, b) {
+    const textA = a.name.toLowerCase();
+    const textB = b.name.toLowerCase();
+    return textA < textB ? -1 : textA > textB ? 1 : 0;
+  });
+};
 
 export const getSubreddits = async () => {
   const session = await getSession();
@@ -155,6 +167,7 @@ export const getSubreddits = async () => {
         Authorization: `Bearer ${sessionToken}`,
         'User-Agent': 'myBot/0.0.1',
       },
+      next: { revalidate: 60 * 60 },
     });
 
     const data = await res.json();
@@ -172,5 +185,9 @@ export const getSubreddits = async () => {
     };
   });
 
-  return subbedList;
+  return subbedList.sort(function (a, b) {
+    const textA = a.name.toLowerCase();
+    const textB = b.name.toLowerCase();
+    return textA < textB ? -1 : textA > textB ? 1 : 0;
+  });
 };
